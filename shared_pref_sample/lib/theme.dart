@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 ThemeData green = ThemeData(
     primaryColor: Colors.green.shade300,
@@ -11,7 +12,9 @@ ThemeData red = ThemeData(
     scaffoldBackgroundColor: Colors.red.shade50);
 
 class ThemeColorData with ChangeNotifier {
-  bool _isGreen = false;
+ late SharedPreferences _sharedPrefObjec;
+
+  bool _isGreen = true;
   
   bool get isGreen=>_isGreen;
 
@@ -21,6 +24,28 @@ class ThemeColorData with ChangeNotifier {
 
   void toggleTheme() {
     _isGreen = !_isGreen;
+    saveThemeToSharedPref(_isGreen);
     notifyListeners();
   }
+
+  Future<void> createSharedPrefObject()async{
+   _sharedPrefObjec= await SharedPreferences.getInstance();
+  } 
+
+  void saveThemeToSharedPref(bool value){
+    _sharedPrefObjec.setBool('themeData', value);
+
+  }
+
+  void loadThemeThemeSharedPref()async{
+    await createSharedPrefObject();
+    _isGreen =_sharedPrefObjec.getBool('themeData') ?? true;
+
+  //   if(_sharedPrefObjec.getBool('themeData')==null){
+  //     _isGreen=true;
+  //   }else{
+  //   _sharedPrefObjec.getBool('themeData');
+  //   }
+  // }
+}
 }
